@@ -3,54 +3,58 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URI;
+import java.util.TimerTask;
 
 public class SwingTest1 extends JFrame {
+    private static JFrame frame = new JFrame("Authentication");
+    private static JButton button = new JButton("Click to Authenticate");
 
-    private Timer timer;
-    private int x, y, xDelta = 2, yDelta = 2;
-    private JButton startButton, stopButton;
-    private AnimatedPanel animatedPanel;
-
-    public SwingTest1() {
-        x = y = 100;
-        timer = new Timer(10, e -> {
-            x += xDelta;
-            y += yDelta;
-
-            if (x + "Hello jDeploy".length() * 7 >= animatedPanel.getWidth() || x < 0) xDelta *= -1;
-            if (y + 15 >= animatedPanel.getHeight() || y < 0) yDelta *= -1;
-
-            animatedPanel.repaint();
-        });
-
-        startButton = new JButton("Start");
-        startButton.addActionListener(e -> timer.start());
-
-        stopButton = new JButton("Stop");
-        stopButton.addActionListener(e -> timer.stop());
-
-        animatedPanel = new AnimatedPanel();
-
-        setLayout(new BorderLayout());
-        add(animatedPanel, BorderLayout.CENTER);
-        add(startButton, BorderLayout.NORTH);
-        add(stopButton, BorderLayout.SOUTH);
-    }
-
-    class AnimatedPanel extends JPanel {
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawString("Hello jDeploy 8", x, y);
-        }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            SwingTest1 frame = new SwingTest1();
+        public static void main(String[] args) {
+            frame.setSize(1920, 1080);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(400, 400);
+            frame.setLayout(null);
+
+            JLabel label = new JLabel("Welcome to SeasideRP", JLabel.CENTER);
+            label.setFont(new Font("Arial", Font.BOLD, 30));
+            label.setSize(400, 50);
+            label.setLocation((frame.getWidth() - label.getWidth()) / 2, (frame.getHeight() + 250)/ 3);
+            frame.add(label);
+
+            button.setSize(200, 50);
+            button.setLocation((frame.getWidth() - button.getWidth()) / 2, (frame.getHeight() - button.getHeight()) / 2);
+            frame.add(button);
+
+            JLabel errorLabel = new JLabel("Thier was en error try again", JLabel.CENTER);
+            errorLabel.setFont(new Font("Arial", Font.BOLD, 30));
+            errorLabel.setSize(400, 50);
+            errorLabel.setLocation((frame.getWidth() - label.getWidth()) / 2, (frame.getHeight() + 50) / 2);
+            errorLabel.setForeground(Color.RED);
+            errorLabel.setVisible(false);
+            frame.add(errorLabel);
+
+
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        Desktop.getDesktop().browse(new URI("https://www.youtube.com/"));
+                    } catch (Exception ex) {
+                        errorLabel.setVisible(true);
+                        TimerTask showError = new TimerTask() {
+                            public void run() {
+                                errorLabel.setVisible(false);
+                            }
+                        };
+                        java.util.Timer timer = new java.util.Timer("Timer");
+                        timer.schedule(showError, 5000);
+                    }
+                }
+            });
+
             frame.setVisible(true);
-        });
+            frame.setResizable(false);
+            frame.setTitle("SeasideRP");
+
     }
+
 }
