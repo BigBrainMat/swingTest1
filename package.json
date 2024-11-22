@@ -9,6 +9,7 @@
     "jdeploy": {
         "jdk": false,
         "javaVersion": "17",
+        "documentTypes": [{}],
         "cheerpj": {
             "githubPages": {
                 "branchPath": "{{ branch }}",
